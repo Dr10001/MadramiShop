@@ -1,0 +1,78 @@
+﻿@page "/cart"
+@inject NavigationManager NavigationManager
+@inject CartService CartService
+
+<SectionContent SectionName="pageTitle">
+	My Cart
+</SectionContent>
+<SectionContent SectionName="toolbarItems">
+	<button type="button" class="btn btn-default btn-sm text-white" @onclick="() => CartService.ClearCartAsync()">Clear</button>
+</SectionContent>
+<div class="container-fluid" style="padding-bottom: 76px;">
+	<div class="row">
+		@if (CartService.Count == 0)
+		{
+			<div class="d-flex flex-column gap-2 justify-content-center align-items-center mt-5 py-5">
+				<img src="vegetables_basket.png" style="height: 150px;" />
+				<label class="text-secondary">No items in cart yet</label>
+				<NavLink href="/" class="btn-app">View products</NavLink>
+			</div>
+		}
+		else
+		{
+			@foreach(var item in CartService.Items)
+			{
+				<div class="col-12 mb-3 bg-white p-3">
+					<div class="hstack gap-2">
+						<div class="produc-info flex-grow-1">
+							<img class ="product-img" src="@item.ImageUrl" />
+							<div class = "d-flex flex-column flex-grow-1 ms-2">
+								<div class = "d-flex justify-content-between align-items-center">
+									<label class ="product-name text-app-dark fw-bold">@item.Name</label>
+									<div class="d-flex">
+										<button type="button" class="btn btn-outline-app square right-radius-0" @onclick="() => CartService.DecreaseCartItemQuantity(item)">-</button>
+										<span class="d-flex align-items-center justify-content-center square bg-app-lighter text-white">@item.Quantity</span>
+										<button type="button" class="btn btn-outline-app square left-radius-0" @onclick="() => CartService.IncreaseCartItemQuantity(item)">+</button>
+									</div>
+								</div>
+								<hr style = "margin: 8px"/>
+								<div class="d-flex justify-content-between align-item-center">
+									<label class="">@item.Quantity x @item.Price.ToString("c") / @item.Unit</label>
+									<label class="text-app-dark fw-bold"> @item.Amount.ToString("c")</label>
+								</div>
+							</div>
+						</div>
+						<div class="vr"></div>
+						<div class="delete-btn" @onclick="() => CartService.RemoveItem(item)">
+							<i class="bx bx-sm bx-trash text-danger"></i>
+						</div>
+					</div>
+				</div>
+			}
+		}
+
+	</div>
+</div>
+@if (CartService.Count > 0)
+{
+	<div class="position-fixed d-flex bg-app-primary justify-content-between align-items-center continue-box" @onclick="ContinueCheckout">
+		<div class="d-flex flex-column text-white">
+			<label class="h3 fw-bold">Total: @CartService.TotalAmount.ToString("c")</label>
+			<span>Total items: @CartService.Count</span>
+		</div>
+		<button type="button" class="btn btn-sm btn-app bg-white text-app-primary continue-btn">Continue</button>
+
+	</div>
+}
+
+
+
+@code {
+	private void ContinueCheckout()
+	{
+		//check if user is logged in
+		//if logged in, open adress selection
+		//else navigate to loggin
+		NavigationManager.NavigateTo("/login");
+	}
+}

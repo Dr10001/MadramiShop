@@ -1,0 +1,76 @@
+﻿@page "/register"
+@layout AuthLayout
+
+@inject NavigationManager NavigationManager
+@inject IAuthApi AuthApi
+@inject AppState AppState
+
+<SectionContent SectionName="pageTitle">
+	Register
+</SectionContent>
+
+
+<div>
+	<EditForm Model="_model" OnValidSubmit="RegisterAsync">
+		<DataAnnotationsValidator />
+		<div class="mb-3">
+			<label class="form-label">Name</label>
+			<InputText @bind-Value="_model.Name" class="form-control app-entry" placeholder="Enter name" />
+			<ValidationMessage For="()=>_model.Name" class="text-danger" />
+		</div>
+		<div class="mb-3">
+			<label class="form-label">Email</label>
+			<InputText @bind-Value="_model.Email" class="form-control app-entry" placeholder="Enter email" />
+			<ValidationMessage For="()=>_model.Email" class="text-danger" />
+		</div>
+		<div class="mb-3">
+			<label class="form-label">Mobile</label>
+			<InputText @bind-Value="_model.Mobile" class="form-control app-entry" placeholder="Enter contact number" />
+			<ValidationMessage For="()=>_model.Mobile" class="text-danger" />
+		</div>
+
+		<div class="mb-3">
+			<label class="form-label">Password</label>
+			<InputText type="password" @bind-Value="_model.Password" class="form-control app-entry" placeholder="Enter password" />
+			<ValidationMessage For="() => _model.Password " class="text-danger" />
+		</div>
+		<div class="mb-3 d-grid">
+			<buton type="submit" class="btn btn-app">Register</buton>
+		</div>
+		<div class="my-3 hstack gap-2">
+			<hr style="width: calc(50% - 58px);" />
+			<span class="text-center" style="width: 116px;">Existing User?</span>
+			<hr style="width: calc(50% - 58px);" />
+		</div>
+		<div class="mb-3 d-grid">
+			<NavLink href="/login" class="btn btn-outline-app">Login</NavLink>
+		</div>
+	</EditForm>
+</div>
+
+@code {
+	private RegisterDto _model = new();
+
+	private async Task RegisterAsync()
+	{
+		await MauiInterop.AlertAsync("ee", "3");
+		AppState.ShowLoader();
+		try
+		{
+			var apiResult = await AuthApi.RegisterAsync(_model);
+			await MauiInterop.AlertAsync(apiResult.ToString(), "1");
+			if (!apiResult.IsSuccess)
+			{
+				await MauiInterop.AlertAsync(apiResult.Error, "Error");
+				return;
+			}
+			//await MauiInterop.ToastAsync("User registered sucsesfully");
+			await MauiInterop.AlertAsync(apiResult.ToString(), "2");
+			NavigationManager.NavigateTo("/login", replace: true);//maybe navigate to user page TBD
+		}
+		finally
+		{
+			AppState.HideLoader();
+		}
+	}
+}

@@ -1,0 +1,17 @@
+﻿@implements IDisposable
+@inject CartService CartService
+@if(CartService.Count > 0)
+{
+	<span class="tabbar-badge bg-app-light text-white">
+		@CartService.CountDisplay
+	</span>
+}
+
+@code {
+	protected override void OnInitialized()
+	{
+		CartService.CartCountChanged += OnCartCountChanged;
+	}
+	private void OnCartCountChanged() => InvokeAsync(StateHasChanged);
+	public void Dispose() => CartService.CartCountChanged -= OnCartCountChanged;
+}

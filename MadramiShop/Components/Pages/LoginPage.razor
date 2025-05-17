@@ -1,0 +1,70 @@
+﻿@page "/login"
+
+@layout AuthLayout
+
+@inject NavigationManager NavigationManager
+@inject IAuthApi AuthApi
+@inject AppState AppState
+@inject AuthState AuthState
+
+<SectionContent SectionName="pageTitle">
+	Login
+</SectionContent>
+
+<div class="">
+	<EditForm Model="_model" OnValidSubmit="LoginAsync">
+		<DataAnnotationsValidator />
+		<div class="mb-3">
+			<label class="form-label">Username</label>
+			<InputText @bind-Value="_model.Username" class="form-control app-entry" placeholder="Enter name" />
+			<ValidationMessage For="() => _model.Username" class="text-danger" />
+		</div>
+		<div class="mb-3">
+			<label class="form-label">Password</label>
+			<InputText type="password" @bind-Value="_model.Password" class="form-control app-entry" placeholder="Enter password" />
+			<ValidationMessage For="() => _model.Password " class="text-danger" />
+		</div>
+		<div class="mb-3 d-grid">
+			<buton type="submit" class="btn btn-app">Login</buton>
+		</div>
+		<div class="my-3 hstack gap-2">
+			<hr style="width: calc(50% - 42px);"/>
+			<span class="text-center" style="width: 84px">New user?</span>
+			<hr style="width: calc(50% - 42px);" />
+		</div>
+		<div class="mb-3 d-grid">
+			<NavLink href="/register" class="btn btn-outline-app">Register</NavLink>
+		</div>
+	</EditForm>
+</div>
+
+@code {
+	private LoginDto _model = new();
+	private async Task LoginAsync()
+	{
+		AppState.ShowLoader();
+		try
+		{
+			var apiResult = await AuthApi.LoginAsync(_model);
+			if (!apiResult.IsSuccess)
+			{
+				await MauiInterop.AlertAsync(apiResult.Error, "Error");
+				return;
+			}
+			//Save user state in some app state
+			//LoggedInUser loggedInUser = apiResult.data; asta
+			//AuthState.Login(loggedInUser); asta
+
+			//NavigationManager.NavigateTo(AuthState.RedirectUrlFromLogin, replace: true);//maybe navigate to user page TBD asta
+			NavigationManager.NavigateTo("/", replace: true);
+			//AuthState.RedirectUrlFromLogin = "/"; asta
+		}
+		finally
+		{
+			AppState.HideLoader();
+		}
+		
+		
+		
+	}
+}

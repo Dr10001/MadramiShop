@@ -1,0 +1,32 @@
+.product-img {
+    height: 40px;
+    width: 40px;
+}
+
+.continue-box {
+    bottom: calc(var(--tabbar-height) + 5px);
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 10px 25px;
+    width: calc(100vw - 50px);
+    height: 76px;
+    border-radius: 38px;
+    box-shadow: 0 0 7px black;
+}
+
+.continue-btn {
+    color: var(--app-primary);
+    height: 50px;
+    width: 100px;
+    border-radius: 20px;
+}
+
+.produc-info {
+    display: flex;
+    width: 100%;
+    align-items: center;
+}
+
+.product-name {
+    font-size: 20px;
+}

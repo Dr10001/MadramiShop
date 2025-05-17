@@ -1,0 +1,31 @@
+﻿@inject CartService CartService
+@if(Product.Quantity == 0)
+{
+	<button type="button" class="btn-app" @onclick="Increment">Add to cart</button>
+}
+else
+{
+	<div class="d-flex">
+		<button type="button" class="btn btn-outline-app square right-radius-0" @onclick="Decrement">-</button>
+		<span class="d-flex align-items-center justify-content-center square bg-app-lighter text-white">@Product.Quantity</span>
+		<button type="button" class="btn btn-outline-app square left-radius-0" @onclick="Increment">+</button>
+	</div>
+}
+
+@code {
+	[Parameter, EditorRequired]
+	public ProductDto Product{get; set;}
+	public void Increment()
+	{
+		Product.Quantity++;
+		CartService.IncreaseQuantity(Product);
+	}
+	public void Decrement()
+	{
+		if(Product.Quantity > 0)
+		{
+			Product.Quantity--;
+			CartService.DecreaseQuantity(Product);
+		}
+	}
+}
